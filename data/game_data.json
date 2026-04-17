@@ -1,0 +1,79 @@
+{
+  "categories": [
+    {
+      "name": "General Science",
+      "questions": [
+        { "q": "What is the chemical symbol for Gold?", "a": "Au","image": "q1.jpg" },
+        { "q": "Which planet is known as the Red Planet?", "a": "Mars","video":"v1.mov" },
+        { "q": "What is the hardest natural substance on Earth?", "a": "Diamond" },
+        { "q": "What gas do plants absorb during photosynthesis?", "a": "Carbon Dioxide" },
+        { "q": "How many bones are in the adult human body?", "a": "206" },
+        { "q": "What is the speed of light approx?", "a": "300,000 km/s","audio":"r1.m4a" },
+        { "q": "Which element has the atomic number 1?", "a": "Hydrogen" },
+        { "q": "What is the powerhouse of the cell?", "a": "Mitochondria" },
+        { "q": "Who proposed the Theory of General Relativity?", "a": "Albert Einstein" },
+        { "q": "What is the boiling point of water in Kelvin?", "a": "373.15 K" }
+      ]
+    },
+    {
+      "name": "World History",
+      "questions": [
+        { "q": "Who was the first President of the United States?", "a": "George Washington" },
+        { "q": "In what year did World War II end?", "a": "1945" },
+        { "q": "Which empire built the Colosseum?", "a": "The Roman Empire" },
+        { "q": "Who was known as the Maid of Orleans?", "a": "Joan of Arc" },
+        { "q": "The Magna Carta was signed in which century?", "a": "13th Century (1215)" },
+        { "q": "Who was the first man in space?", "a": "Yuri Gagarin" },
+        { "q": "Which civilization built the Great Pyramid of Giza?", "a": "Ancient Egyptians" },
+        { "q": "What was the name of the ship that sank in 1912?", "a": "The Titanic" },
+        { "q": "Who was the leader of the Soviet Union during WWII?", "a": "Joseph Stalin" },
+        { "q": "In which year did the Berlin Wall fall?", "a": "1989" }
+      ]
+    },
+    {
+      "name": "Pop Culture",
+      "questions": [
+        { "q": "Which singer is known as the 'Queen of Pop'?", "a": "Madonna" },
+        { "q": "What is the name of the fictional kingdom in Frozen?", "a": "Arendelle" },
+        { "q": "Who played Jack Dawson in the movie Titanic?", "a": "Leonardo DiCaprio" },
+        { "q": "Which TV show features the 'Upside Down'?", "a": "Stranger Things" },
+        { "q": "What is the name of Batman's butler?", "a": "Alfred Pennyworth" },
+        { "q": "Which artist released the album 'Thriller'?", "a": "Michael Jackson" },
+        { "q": "What is the name of the wizarding school in Harry Potter?", "a": "Hogwarts" },
+        { "q": "In The Office, what is the name of the paper company?", "a": "Dunder Mifflin" },
+        { "q": "Which superhero is also known as Peter Parker?", "a": "Spider-Man" },
+        { "q": "Who directed the movie Interstellar?", "a": "Christopher Nolan" }
+      ]
+    },
+    {
+      "name": "Literature",
+      "questions": [
+        { "q": "Who wrote 'Romeo and Juliet'?", "a": "William Shakespeare" },
+        { "q": "What is the name of the detective in 'A Study in Scarlet'?", "a": "Sherlock Holmes" },
+        { "q": "Who wrote the 'Harry Potter' series?", "a": "J.K. Rowling" },
+        { "q": "In which book would you find the character 'Atticus Finch'?", "a": "To Kill a Mockingbird" },
+        { "q": "What is the first book of the Old Testament?", "a": "Genesis" },
+        { "q": "Who wrote 'The Great Gatsby'?", "a": "F. Scott Fitzgerald" },
+        { "q": "In 'The Hobbit', what kind of creature is Smaug?", "a": "A Dragon" },
+        { "q": "Who wrote the dystopian novel '1984'?", "a": "George Orwell" },
+        { "q": "What was the name of the captain in 'Moby Dick'?", "a": "Captain Ahab" },
+        { "q": "Which Russian author wrote 'War and Peace'?", "a": "Leo Tolstoy" }
+      ]
+    },
+    {
+      "name": "Technology",
+      "questions": [
+        { "q": "What does 'WWW' stand for?", "a": "World Wide Web", "value": 300 },
+        { "q": "Who co-founded Microsoft alongside Paul Allen?", "a": "Bill Gates", "value": 300 },
+        { "q": "Which company developed the iPhone?", "a": "Apple", "value": 300 },
+        { "q": "What is the main language used for styling web pages?", "a": "CSS", "value": 300 },
+        { "q": "What does 'URL' stand for?", "a": "Uniform Resource Locator", "value": 300 },
+        { "q": "Which social media platform was originally called 'TheFacebook'?", "a": "Facebook", "value": 300 },
+        { "q": "What is the world's largest search engine?", "a": "Google", "value": 300 },
+        { "q": "In computer science, what does 'RAM' stand for?", "a": "Random Access Memory", "value": 300 },
+        { "q": "What year was the first iPhone released?", "a": "2007", "value": 300 },
+        { "q": "Who is considered the 'father of the computer'?", "a": "Charles Babbage", "value": 300 }
+      ]
+    }
+  ]
+}
