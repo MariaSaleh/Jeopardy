@@ -3,7 +3,7 @@
     {
       "name": "General Science",
       "questions": [
-        { "q": "What is the chemical symbol for Gold?", "a": "Au","image": "q1.jpg" },
+        { "q": "What is the chemical symbol for Gold?", "a": "Au" },
         { "q": "Which planet is known as the Red Planet?", "a": "Mars","video":"v1.mov" },
         { "q": "What is the hardest natural substance on Earth?", "a": "Diamond" },
         { "q": "What gas do plants absorb during photosynthesis?", "a": "Carbon Dioxide" },
