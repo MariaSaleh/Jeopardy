@@ -250,7 +250,7 @@
     // Load external JSON
     async function loadData() {
         try {
-            const response = await fetch('assets/game_data.json');
+            const response = await fetch('data/game_data.json');
             gameData = await response.json();
         } catch(e) { 
             console.error(e);
