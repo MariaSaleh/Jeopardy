@@ -220,14 +220,13 @@
         <h1>GAME SETUP</h1>
         <div id="team-inputs">
             <div class="team-row">
-                <input type="text" class="t-name" placeholder="TEAM 1 NAME">
-                <div class="remove-btn-space"></div> 
+                <div class="remove-btn-space"></div> <input type="text" class="t-name" placeholder="TEAM 1 NAME">
             </div>
             <div class="team-row">
-                <input type="text" class="t-name" placeholder="TEAM 2 NAME">
                 <div class="remove-btn-space">
                     <button class="remove-btn" onclick="removeTeamInput(this)">✕</button>
                 </div>
+                <input type="text" class="t-name" placeholder="TEAM 2 NAME">
             </div>
         </div>
         <button class="btn btn-nav" onclick="addTeamInput()" style="margin-top: 10px;">+ ADD TEAM</button>
@@ -294,17 +293,19 @@
         const row = document.createElement('div');
         row.className = 'team-row';
         row.innerHTML = `
-            <input type="text" class="t-name" placeholder="TEAM ${count} NAME">
             <div class="remove-btn-space">
                 <button class="remove-btn" onclick="removeTeamInput(this)">✕</button>
             </div>
+            <input type="text" class="t-name" placeholder="TEAM ${count} NAME">
         `;
         container.appendChild(row);
-}
-
+    }
+    
     function removeTeamInput(btn) {
-        btn.parentElement.remove();
-        // Update placeholders for remaining inputs
+        // Guaranteed to remove the full row
+        btn.closest('.team-row').remove();
+        
+        // Refresh placeholders
         const inputs = document.querySelectorAll('.t-name');
         inputs.forEach((input, index) => {
             input.placeholder = `TEAM ${index + 1} NAME`;
