@@ -220,7 +220,8 @@
         <h1>GAME SETUP</h1>
         <div id="team-inputs">
             <div class="team-row">
-                <input type="text" class="t-name" placeholder="TEAM 1 NAME" style="width: 70%;">
+                <input type="text" class="t-name" placeholder="TEAM 1 NAME">
+                <div class="remove-btn-space"></div> 
             </div>
             <div class="team-row">
                 <input type="text" class="t-name" placeholder="TEAM 2 NAME">
@@ -293,11 +294,13 @@
         const row = document.createElement('div');
         row.className = 'team-row';
         row.innerHTML = `
-            <input type="text" class="t-name" placeholder="TEAM ${count} NAME" style="width: 70%;">
-            <button class="remove-btn" onclick="removeTeamInput(this)">✕</button>
+            <input type="text" class="t-name" placeholder="TEAM ${count} NAME">
+            <div class="remove-btn-space">
+                <button class="remove-btn" onclick="removeTeamInput(this)">✕</button>
+            </div>
         `;
         container.appendChild(row);
-    }
+}
 
     function removeTeamInput(btn) {
         btn.parentElement.remove();
