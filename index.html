@@ -193,23 +193,18 @@
         }
 
         /* Specific styling for the setup rows */
-        .team-row {
+       .team-row {
             display: flex;
             gap: 10px;
-            justify-content: center;
+            justify-content: center; /* Centers the whole row */
             align-items: center;
             margin-bottom: 12px;
-            width: 100%;
         }
-
-        .remove-btn {
-            background: #ff3366;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 15px;
-            cursor: pointer;
-            font-weight: bold;
+        
+        .remove-btn-space {
+            width: 44px; /* Matches the width of your button + some padding */
+            display: flex;
+            justify-content: center;
         }
     </style>
 </head>
@@ -218,9 +213,12 @@
 <div id="setup-overlay">
     <div class="setup-card">
         <h1>GAME SETUP</h1>
-        <div id="team-inputs">
+       <div id="team-inputs">
             <div class="team-row">
-                <div class="remove-btn-space"></div> <input type="text" class="t-name" placeholder="TEAM 1 NAME">
+                <div class="remove-btn-space">
+                    <button class="remove-btn" style="visibility: hidden;">✕</button>
+                </div>
+                <input type="text" class="t-name" placeholder="TEAM 1 NAME">
             </div>
             <div class="team-row">
                 <div class="remove-btn-space">
@@ -302,16 +300,12 @@
     }
     
     function removeTeamInput(btn) {
-        // Guaranteed to remove the full row
         btn.closest('.team-row').remove();
-        
-        // Refresh placeholders
         const inputs = document.querySelectorAll('.t-name');
         inputs.forEach((input, index) => {
             input.placeholder = `TEAM ${index + 1} NAME`;
         });
     }
-
     function startGame() {
         const nameInputs = document.querySelectorAll('.t-name');
         const teamBar = document.getElementById('team-bar');
