@@ -190,21 +190,34 @@
             border-radius: 8px;
             text-align: center;
             font-size: 1rem;
+            width: 250px;
         }
 
-        /* Specific styling for the setup rows */
-       .team-row {
+        /* --- THE ALIGNMENT FIX --- */
+        .team-row {
             display: flex;
-            gap: 10px;
-            justify-content: center; /* Centers the whole row */
+            gap: 15px;
+            justify-content: center;
             align-items: center;
             margin-bottom: 12px;
+            width: 100%;
         }
-        
-        .remove-btn-space {
-            width: 44px; /* Matches the width of your button + some padding */
+
+        .remove-btn-space, .right-spacer {
+            width: 45px; /* Fixed width to balance both sides */
             display: flex;
             justify-content: center;
+        }
+
+        .remove-btn {
+            background: #ff3366;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 12px;
+            cursor: pointer;
+            font-weight: bold;
+            line-height: 1;
         }
     </style>
 </head>
@@ -213,18 +226,20 @@
 <div id="setup-overlay">
     <div class="setup-card">
         <h1>GAME SETUP</h1>
-       <div id="team-inputs">
+        <div id="team-inputs">
             <div class="team-row">
                 <div class="remove-btn-space">
                     <button class="remove-btn" style="visibility: hidden;">✕</button>
                 </div>
                 <input type="text" class="t-name" placeholder="TEAM 1 NAME">
+                <div class="right-spacer"></div>
             </div>
             <div class="team-row">
                 <div class="remove-btn-space">
                     <button class="remove-btn" onclick="removeTeamInput(this)">✕</button>
                 </div>
                 <input type="text" class="t-name" placeholder="TEAM 2 NAME">
+                <div class="right-spacer"></div>
             </div>
         </div>
         <button class="btn btn-nav" onclick="addTeamInput()" style="margin-top: 10px;">+ ADD TEAM</button>
@@ -272,18 +287,16 @@
     let activeCardNode = null;
     let gameData = null;
 
-    // Load external JSON
     async function loadData() {
         try {
             const response = await fetch('data/game_data.json');
             gameData = await response.json();
         } catch(e) { 
             console.error(e);
-            alert("Error: Ensure 'game_data.json' exists and you are running via a local server (http://)."); 
+            // Non-blocking error for setup phase
         }
     }
 
-    // Dynamic Team Management
     function addTeamInput() {
         const container = document.getElementById('team-inputs');
         const count = container.querySelectorAll('.team-row').length + 1;
@@ -295,17 +308,22 @@
                 <button class="remove-btn" onclick="removeTeamInput(this)">✕</button>
             </div>
             <input type="text" class="t-name" placeholder="TEAM ${count} NAME">
+            <div class="right-spacer"></div>
         `;
         container.appendChild(row);
     }
-    
+
     function removeTeamInput(btn) {
+        // Correctly finds and removes the full row
         btn.closest('.team-row').remove();
+        
+        // Re-calculate placeholders
         const inputs = document.querySelectorAll('.t-name');
         inputs.forEach((input, index) => {
             input.placeholder = `TEAM ${index + 1} NAME`;
         });
     }
+
     function startGame() {
         const nameInputs = document.querySelectorAll('.t-name');
         const teamBar = document.getElementById('team-bar');
@@ -345,10 +363,8 @@
     function renderBoard() {
         const board = document.getElementById('game-board');
         board.innerHTML = '';
-        
         if (!gameData) return;
 
-        // Headers
         gameData.categories.forEach(cat => {
             const h = document.createElement('div');
             h.className = 'category-title';
@@ -356,7 +372,6 @@
             board.appendChild(h);
         });
 
-        // Rows
         const maxQ = Math.max(...gameData.categories.map(c => c.questions.length));
         for (let i = 0; i < maxQ; i++) {
             gameData.categories.forEach(cat => {
