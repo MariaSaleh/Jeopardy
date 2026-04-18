@@ -156,7 +156,7 @@
 
         #media-container {
             margin-bottom: 20px;
-            max-height: 400px;
+            max-height: 350px;
             overflow: hidden;
             display: none;
             background: #000;
@@ -164,7 +164,7 @@
             border: 1px solid var(--accent-gold);
         }
 
-        video, audio, iframe { width: 100%; height: 350px; border: none; }
+        video, audio { width: 100%; }
 
         .btn {
             font-family: 'Oswald', sans-serif;
@@ -192,25 +192,14 @@
             font-size: 1rem;
         }
 
-        /* --- TEAM SETUP ALIGNMENT FIX --- */
+        /* Specific styling for the setup rows */
         .team-row {
             display: flex;
+            gap: 10px;
             justify-content: center;
             align-items: center;
             margin-bottom: 12px;
             width: 100%;
-        }
-
-        .t-name {
-            width: 70%;
-            box-sizing: border-box;
-        }
-
-        .remove-btn-space {
-            width: 50px; /* Same width as button + gap */
-            margin-left: 10px;
-            display: flex;
-            justify-content: flex-start;
         }
 
         .remove-btn {
@@ -231,8 +220,7 @@
         <h1>GAME SETUP</h1>
         <div id="team-inputs">
             <div class="team-row">
-                <input type="text" class="t-name" placeholder="TEAM 1 NAME">
-                <div class="remove-btn-space"></div>
+                <input type="text" class="t-name" placeholder="TEAM 1 NAME" style="width: 70%;">
             </div>
             <div class="team-row">
                 <input type="text" class="t-name" placeholder="TEAM 2 NAME">
@@ -269,7 +257,7 @@
         <div id="scoring-zone" style="display:none; flex-direction: column; gap: 20px;">
             <div style="display:flex; gap: 15px;">
                 <button class="btn btn-correct" onclick="processResult('correct')">CORRECT</button>
-                <button class="btn btn-wrong" onclick="processResult('wrong')">WRONG</button>
+                <button class="btn btn-wrong" onclick="processResult('wrong')">WRONG </button>
             </div>
             <div style="display:flex; gap: 10px; align-items: center; border-top: 1px solid #333; padding-top: 20px;">
                 <input type="number" id="custom-score-input" placeholder="Value" style="width: 100px;">
@@ -286,30 +274,36 @@
     let activeCardNode = null;
     let gameData = null;
 
+    // Load external JSON
     async function loadData() {
         try {
             const response = await fetch('data/game_data.json');
             gameData = await response.json();
-        } catch(e) { console.error(e); }
+        } catch(e) { 
+            console.error(e);
+            alert("Error: Ensure 'game_data.json' exists and you are running via a local server (http://)."); 
+        }
     }
 
+    // Dynamic Team Management
     function addTeamInput() {
         const container = document.getElementById('team-inputs');
         const count = container.querySelectorAll('.team-row').length + 1;
+        
         const row = document.createElement('div');
         row.className = 'team-row';
         row.innerHTML = `
-            <input type="text" class="t-name" placeholder="TEAM ${count} NAME">
-            <div class="remove-btn-space">
-                <button class="remove-btn" onclick="removeTeamInput(this)">✕</button>
-            </div>
+            <input type="text" class="t-name" placeholder="TEAM ${count} NAME" style="width: 70%;">
+            <button class="remove-btn" onclick="removeTeamInput(this)">✕</button>
         `;
         container.appendChild(row);
     }
 
     function removeTeamInput(btn) {
-        btn.closest('.team-row').remove();
-        document.querySelectorAll('.t-name').forEach((input, index) => {
+        btn.parentElement.remove();
+        // Update placeholders for remaining inputs
+        const inputs = document.querySelectorAll('.t-name');
+        inputs.forEach((input, index) => {
             input.placeholder = `TEAM ${index + 1} NAME`;
         });
     }
@@ -317,7 +311,11 @@
     function startGame() {
         const nameInputs = document.querySelectorAll('.t-name');
         const teamBar = document.getElementById('team-bar');
-        if (nameInputs.length === 0) return;
+        
+        if (nameInputs.length === 0) {
+            alert("Please add at least one team!");
+            return;
+        }
 
         teamBar.innerHTML = '';
         teams = [];
@@ -325,13 +323,17 @@
         nameInputs.forEach((input, index) => {
             const name = input.value.trim().toUpperCase() || `TEAM ${index + 1}`;
             teams.push({ id: index, name: name, score: 0 });
+            
             const div = document.createElement('div');
             div.className = 'team-box';
             div.id = `box-team-${index}`;
             div.innerHTML = `
                 <div style="font-size:0.75rem; color:var(--accent-gold); font-weight:bold; letter-spacing:1px; margin-bottom:5px;">PLAYING</div>
                 <div style="font-family:'Oswald'; font-size:1.2rem; margin-bottom:5px;">${name}</div>
-                <div id="score-${index}" contenteditable="true" onblur="syncManualScore(${index})" 
+                <div id="score-${index}" 
+                     contenteditable="true" 
+                     onfocus="stripFormatting(this)" 
+                     onblur="syncManualScore(${index})" 
                      style="font-size:1.8rem; font-weight:bold; color:var(--accent-gold); cursor:text; outline:none;">$0</div>
             `;
             teamBar.appendChild(div);
@@ -345,13 +347,18 @@
     function renderBoard() {
         const board = document.getElementById('game-board');
         board.innerHTML = '';
+        
         if (!gameData) return;
+
+        // Headers
         gameData.categories.forEach(cat => {
             const h = document.createElement('div');
             h.className = 'category-title';
             h.innerText = cat.name;
             board.appendChild(h);
         });
+
+        // Rows
         const maxQ = Math.max(...gameData.categories.map(c => c.questions.length));
         for (let i = 0; i < maxQ; i++) {
             gameData.categories.forEach(cat => {
@@ -362,16 +369,12 @@
                     const val = (qObj.value !== undefined) ? qObj.value : (i + 1) * 100;
                     card.innerText = `$${val}`;
                     card.onclick = () => openQuestion(qObj, val, card);
-                } else { card.style.visibility = 'hidden'; }
+                } else {
+                    card.style.visibility = 'hidden';
+                }
                 board.appendChild(card);
             });
         }
-    }
-
-    function getYouTubeID(url) {
-        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-        const match = url.match(regExp);
-        return (match && match[2].length === 11) ? match[2] : null;
     }
 
     function openQuestion(qObj, val, node) {
@@ -381,11 +384,7 @@
         mediaBox.innerHTML = '';
         mediaBox.style.display = 'none';
 
-        if (qObj.youtube) {
-            const id = getYouTubeID(qObj.youtube);
-            mediaBox.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
-            mediaBox.style.display = 'block';
-        } else if (qObj.video) {
+        if (qObj.video) {
             mediaBox.innerHTML = `<video src="${qObj.video}" controls autoplay></video>`;
             mediaBox.style.display = 'block';
         } else if (qObj.audio) {
@@ -415,18 +414,28 @@
 
     function processResult(type) {
         const team = teams[currentTeamIndex];
-        if (type === 'correct') team.score += activeValue;
-        else if (type === 'wrong') team.score -= (activeValue / 2);
-        else if (type === 'custom') {
+        if (type === 'correct') {
+            team.score += activeValue;
+        } else if (type === 'wrong') {
+            team.score -= (activeValue / 2);
+        } else if (type === 'custom') {
             const val = parseInt(document.getElementById('custom-score-input').value);
             if (!isNaN(val)) team.score += val;
         }
+
         updateScoreDisplay(currentTeamIndex);
         activeCardNode.classList.add('disabled');
+        document.getElementById('custom-score-input').value = '';
+        
         currentTeamIndex = (currentTeamIndex + 1) % teams.length;
         updateTurnUI();
+        
         document.getElementById('modal').style.display = 'none';
         document.getElementById('media-container').innerHTML = '';
+    }
+
+    function stripFormatting(el) {
+        el.innerText = el.innerText.replace('$', '').replace(',', '');
     }
 
     function syncManualScore(index) {
@@ -438,13 +447,17 @@
 
     function updateScoreDisplay(index) {
         const s = teams[index].score;
-        document.getElementById(`score-${index}`).innerText = (s < 0 ? '-$' : '$') + Math.abs(s).toLocaleString();
+        const el = document.getElementById(`score-${index}`);
+        el.innerText = (s < 0 ? '-$' : '$') + Math.abs(s).toLocaleString();
     }
 
     function updateTurnUI() {
         teams.forEach((t, i) => {
             const box = document.getElementById(`box-team-${i}`);
-            if (box) i === currentTeamIndex ? box.classList.add('active-turn') : box.classList.remove('active-turn');
+            if (box) {
+                if (i === currentTeamIndex) box.classList.add('active-turn');
+                else box.classList.remove('active-turn');
+            }
         });
     }
 
