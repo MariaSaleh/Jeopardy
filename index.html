@@ -191,6 +191,26 @@
             text-align: center;
             font-size: 1rem;
         }
+
+        /* Specific styling for the setup rows */
+        .team-row {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 12px;
+            width: 100%;
+        }
+
+        .remove-btn {
+            background: #ff3366;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -199,10 +219,15 @@
     <div class="setup-card">
         <h1>GAME SETUP</h1>
         <div id="team-inputs">
-            <input type="text" class="t-name" placeholder="TEAM 1 NAME" style="width: 80%; margin-bottom: 12px;">
-            <input type="text" class="t-name" placeholder="TEAM 2 NAME" style="width: 80%; margin-bottom: 12px;">
+            <div class="team-row">
+                <input type="text" class="t-name" placeholder="TEAM 1 NAME" style="width: 70%;">
+            </div>
+            <div class="team-row">
+                <input type="text" class="t-name" placeholder="TEAM 2 NAME" style="width: 70%;">
+                <button class="remove-btn" onclick="removeTeamInput(this)">✕</button>
+            </div>
         </div>
-        <button class="btn btn-nav" onclick="addTeamInput()">+ ADD TEAM</button>
+        <button class="btn btn-nav" onclick="addTeamInput()" style="margin-top: 10px;">+ ADD TEAM</button>
         <button class="btn btn-main" onclick="startGame()" style="display:block; width:100%; margin-top:30px; font-size:1.4rem;">ENTER STAGE</button>
     </div>
 </div>
@@ -258,25 +283,45 @@
         }
     }
 
+    // Dynamic Team Management
     function addTeamInput() {
         const container = document.getElementById('team-inputs');
-        const input = document.createElement('input');
-        input.type = "text";
-        input.className = "t-name";
-        input.placeholder = `TEAM ${container.querySelectorAll('input').length + 1} NAME`;
-        input.style = "width: 80%; margin-bottom: 12px;";
-        container.appendChild(input);
+        const count = container.querySelectorAll('.team-row').length + 1;
+        
+        const row = document.createElement('div');
+        row.className = 'team-row';
+        row.innerHTML = `
+            <input type="text" class="t-name" placeholder="TEAM ${count} NAME" style="width: 70%;">
+            <button class="remove-btn" onclick="removeTeamInput(this)">✕</button>
+        `;
+        container.appendChild(row);
+    }
+
+    function removeTeamInput(btn) {
+        btn.parentElement.remove();
+        // Update placeholders for remaining inputs
+        const inputs = document.querySelectorAll('.t-name');
+        inputs.forEach((input, index) => {
+            input.placeholder = `TEAM ${index + 1} NAME`;
+        });
     }
 
     function startGame() {
         const nameInputs = document.querySelectorAll('.t-name');
         const teamBar = document.getElementById('team-bar');
+        
+        if (nameInputs.length === 0) {
+            alert("Please add at least one team!");
+            return;
+        }
+
         teamBar.innerHTML = '';
         teams = [];
         
         nameInputs.forEach((input, index) => {
             const name = input.value.trim().toUpperCase() || `TEAM ${index + 1}`;
             teams.push({ id: index, name: name, score: 0 });
+            
             const div = document.createElement('div');
             div.className = 'team-box';
             div.id = `box-team-${index}`;
@@ -301,6 +346,8 @@
         const board = document.getElementById('game-board');
         board.innerHTML = '';
         
+        if (!gameData) return;
+
         // Headers
         gameData.categories.forEach(cat => {
             const h = document.createElement('div');
@@ -317,7 +364,6 @@
                 const card = document.createElement('div');
                 card.className = 'card';
                 if (qObj) {
-                    // Logic: Use custom value from JSON or default row-based value
                     const val = (qObj.value !== undefined) ? qObj.value : (i + 1) * 100;
                     card.innerText = `$${val}`;
                     card.onclick = () => openQuestion(qObj, val, card);
@@ -336,7 +382,6 @@
         mediaBox.innerHTML = '';
         mediaBox.style.display = 'none';
 
-        // Check for Video/Audio
         if (qObj.video) {
             mediaBox.innerHTML = `<video src="${qObj.video}" controls autoplay></video>`;
             mediaBox.style.display = 'block';
@@ -344,9 +389,9 @@
             mediaBox.innerHTML = `<audio src="${qObj.audio}" controls autoplay></audio>`;
             mediaBox.style.display = 'block';
         } else if (qObj.image) {
-        mediaBox.innerHTML = `<img src="${qObj.image}" style="max-width:100%; max-height:300px; object-fit:contain;">`;
-        mediaBox.style.display = 'block';
-    }
+            mediaBox.innerHTML = `<img src="${qObj.image}" style="max-width:100%; max-height:300px; object-fit:contain;">`;
+            mediaBox.style.display = 'block';
+        }
 
         document.getElementById('current-player-tag').innerText = `${teams[currentTeamIndex].name}'s ATTEMPT • $${val}`;
         document.getElementById('display-q').innerText = qObj.q;
@@ -370,7 +415,7 @@
         if (type === 'correct') {
             team.score += activeValue;
         } else if (type === 'wrong') {
-            team.score -= (activeValue / 2); // Penalty: Half the value
+            team.score -= (activeValue / 2);
         } else if (type === 'custom') {
             const val = parseInt(document.getElementById('custom-score-input').value);
             if (!isNaN(val)) team.score += val;
@@ -380,7 +425,6 @@
         activeCardNode.classList.add('disabled');
         document.getElementById('custom-score-input').value = '';
         
-        // Pass turn
         currentTeamIndex = (currentTeamIndex + 1) % teams.length;
         updateTurnUI();
         
@@ -388,7 +432,6 @@
         document.getElementById('media-container').innerHTML = '';
     }
 
-    // Editable Score Helpers
     function stripFormatting(el) {
         el.innerText = el.innerText.replace('$', '').replace(',', '');
     }
@@ -409,8 +452,10 @@
     function updateTurnUI() {
         teams.forEach((t, i) => {
             const box = document.getElementById(`box-team-${i}`);
-            if (i === currentTeamIndex) box.classList.add('active-turn');
-            else box.classList.remove('active-turn');
+            if (box) {
+                if (i === currentTeamIndex) box.classList.add('active-turn');
+                else box.classList.remove('active-turn');
+            }
         });
     }
 
